@@ -152,6 +152,7 @@
         },
         "adminPassword": {
             "type": "securestring",
+            "defaultValue": "",
             "metadata": {
                 "description": "Password for the Virtual Machine."
             }
