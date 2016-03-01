@@ -1,3 +1,4 @@
+
 {
   "handler": "Microsoft.Compute.MultiVm",
   "version": "0.0.1-preview",
@@ -20,7 +21,7 @@
         "osPlatform": "Linux"
       },
       {
-          "name": "SSHCredentials",
+          "name": "SSHCredntials",
           "type": "Microsoft.Compute.CredentialsCombo",
           "label": {
               "authenticationType": "Authentication type",
@@ -40,17 +41,17 @@
               "hideConfirmation": false
           },
           "osPlatform": "Linux"
-      }
+      } 
     ],
     "steps": [
       {
-        "name": "ciscoASAvConfig",
-        "label": "Cisco ASAv settings",
+        "name": "ciscoCSRConfig",
+        "label": "Cisco CSR settings",
         "subLabel": {
-          "preValidation": "Configure the ASAv settings",
+          "preValidation": "Configure the CSR settings",
           "postValidation": "Done"
         },
-        "bladeTitle": "Cisco ASAv settings",
+        "bladeTitle": "Cisco CSR settings",
         "elements": [
           {
             "name": "Size",
@@ -62,14 +63,15 @@
             ],
             "constraints": {
               "allowedSizes": [
+                "Standard_D2"
                 "Standard_D3"
               ]
             },
             "osPlatform": "Linux",
             "imageReference": {
               "publisher": "cisco",
-              "offer": "cisco-asav",
-              "sku": "asav-azure-byol"
+              "offer": "cisco-csr-1000v",
+              "sku": "csr-azure-byol"
             },
             "count": "1"
           },
@@ -98,7 +100,7 @@
               "domainNameLabel": "DNS label for the Virtual Machine's public IP address."
             },
             "defaultValue": {
-              "publicIpAddressName": ""
+              "publicIpAddressName": "ip01"
             },
             "options": {
               "hideNone": true
@@ -113,7 +115,7 @@
             },
             "toolTip": {
                 "virtualNetwork": "Virtual Network Name",
-                "subnets": "Subnets requied for the Cisco ASAv solution"
+                "subnets": "Subnets requied for the Cisco CSR solution"
             },
             "defaultValue": {
                 "name": "vnet01",
@@ -125,6 +127,10 @@
             "subnets": {
                 "subnet1": {
                     "label": "First subnet",
+                    "defaultValue": {
+                        "name": "Subnet-1",
+                        "addressPrefixSize": "/24"
+                    },
                     "constraints": {
                         "minAddressPrefixSize": "/24",
                         "minAddressCount": 12,
@@ -133,6 +139,10 @@
                 },
                 "subnet2": {
                     "label": "Second subnet",
+                    "defaultValue": {
+                        "name": "Subnet-2",
+                        "addressPrefixSize": "/24"
+                    },
                     "constraints": {
                         "minAddressPrefixSize": "/24",
                         "minAddressCount": 12,
@@ -140,7 +150,11 @@
                     }
                 },
                 "subnet3": {
-                    "label": "Third subnet",
+                    "label": "First subnet",
+                    "defaultValue": {
+                        "name": "Subnet-3",
+                        "addressPrefixSize": "/24"
+                    },
                     "constraints": {
                         "minAddressPrefixSize": "/24",
                         "minAddressCount": 12,
@@ -148,7 +162,11 @@
                     }
                 },
                 "subnet4": {
-                    "label": "Fourth subnet",
+                    "label": "First subnet",
+                    "defaultValue": {
+                        "name": "Subnet-4",
+                        "addressPrefixSize": "/24"
+                    },
                     "constraints": {
                         "minAddressPrefixSize": "/24",
                         "minAddressCount": 12,
@@ -161,37 +179,40 @@
       }
     ],
     "outputs": {
-      "vmName": "[basics('Name')]",
+      "vmName": "[basics('clusterName')]",
       "adminUsername": "[basics('adminUsername')]",
-      "adminPassword": "[basics('SSHCredentials').password]",
-      "sshPublicKey": "[basics('SSHCredentials').sshPublicKey]",
-      "authenticationType" : "[basics('SSHCredentials').authenticationType]",
-      "vmSize": "[steps('ciscoASAvConfig').Size]",
+      "adminPassword": "[basics('password')]",
+      "sshPublicKey": "[basics('sshPublicKey')]",
+      "authenticationType" : "[basics('authenticationType')]",
+      "vmSize": "[steps('ciscoCSRConfig').vmSize]",
       "location": "[location()]",
-      "newStorageAccountName" : "[steps('ciscoASAvConfig').storageAccount.name]",
-      "storageAccountType" : "[steps('ciscoASAvConfig').storageAccount.type]",
-      "storageAccountNewOrExisting" : "[steps('ciscoASAvConfig').storageAccount.newOrExisting]",
-      "storageAccountExistingRG" : "[steps('ciscoASAvConfig').storageAccount.resourceGroup]",
-      "publicIPAddressName" : "[steps('ciscoASAvConfig').publicIpAddress.name]",
-      "publicIPDnsName" : "[steps('ciscoASAvConfig').publicIpAddress.domainNameLabel]",
-      "publicIPNewOrExisting" : "[steps('ciscoASAvConfig').publicIpAddress.newOrExistingOrNone]",
-      "publicIPExistingRGName" : "[steps('ciscoASAvConfig').publicIpAddress.resourceGroup]",
-      "virtualNetworkName" : "[steps('ciscoASAvConfig').virtualNetwork.name]",
-      "virtualNetworkAddressPrefix" : "[steps('ciscoASAvConfig').virtualNetwork.addressPrefix]",
-      "Subnet1Name" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet1.name]",
-      "Subnet1Prefix" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet1.addressPrefix]",
-      "Subnet2Name" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet2.name]",
-      "Subnet2Prefix" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet2.addressPrefix]",
-      "Subnet3Name" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet3.name]",
-      "Subnet3Prefix" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet3.addressPrefix]",
-      "Subnet4Name" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet4.name]",
-      "Subnet4Prefix" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet4.addressPrefix]",
-      "vnetNewOrExisting" : "[steps('ciscoASAvConfig').virtualNetwork.newOrExisting]",
-      "virtualNetworkExistingRGName" : "[steps('ciscoASAvConfig').virtualNetwork.resourceGroup]",
-      "subnet1StartAddress" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet1.startAddress]",
-      "subnet2StartAddress" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet2.startAddress]",
-      "subnet3StartAddress" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet3.startAddress]",
-      "subnet4StartAddress" : "[steps('ciscoASAvConfig').virtualNetwork.subnets.subnet4.startAddress]"
+      "newStorageAccountName" : "[steps('ciscoCSRConfig').storageAccount.name]",
+      "storageAccountType" : "[steps('ciscoCSRConfig').storageAccount.type]", 
+      "storageAccountNewOrExisting" : "[steps('ciscoCSRConfig').storageAccount.newOrExisting]",
+      "storageAccountExistingRG" : "[steps('ciscoCSRConfig').storageAccount.resourceGroup]",
+      "publicIPAddressName" : "[steps('ciscoCSRConfig').publicIpAddress.name]",
+      "publicIPDnsName" : "[steps('ciscoCSRConfig').publicIpAddress.domainNameLabel]", 
+      "publicIPNewOrExisting" : "[steps('ciscoCSRConfig').publicIpAddress.newOrExistingOrNone]",
+      "publicIPExistingRGName" : "[steps('ciscoCSRConfig').publicIpAddress.resourceGroup]",
+      "virtualNetworkName" : "[steps('ciscoCSRConfig').virtualNetwork.name]",
+      "virtualNetworkAddressPrefix" : "[steps('ciscoCSRConfig').virtualNetwork.addressPrefix]", 
+      "vnetNewOrExisting" : "[steps('ciscoCSRConfig').virtualNetwork.newOrExisting]",
+      "virtualNetworkExistingRGName" : "[steps('ciscoCSRConfig').virtualNetwork.resourceGroup]",
+
+      "Subnet1Name" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet1.name]",
+      "Subnet1Prefix" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet1.addressPrefix]",
+
+      "Subnet2Name" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.name]",
+      "Subnet2Prefix" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.addressPrefix]", 
+      "subnet2StartAddress" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.startAddress]",
+
+      "Subnet3Name" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.name]",
+      "Subnet3Prefix" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.addressPrefix]", 
+      "subnet3StartAddress" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.startAddress]",
+
+      "Subnet4Name" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.name]",
+      "Subnet4Prefix" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.addressPrefix]", 
+      "subnet4StartAddress" : "[steps('ciscoCSRConfig').virtualNetwork.subnets.subnet2.startAddress]"
     }
   }
 }
